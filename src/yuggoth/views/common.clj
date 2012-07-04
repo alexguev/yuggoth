@@ -26,7 +26,7 @@
   [:div.sidebar
    [:h2 "Recent posts"]
    (into [:ul]
-         (for [{:keys [id time title]} (db/get-posts 10)]
+         (for [{:keys [id time title]} (reverse (sort-by :time (db/get-posts 10)))]
            [:li 
             (link-to (str "/blog/" id)
                      title
