@@ -47,13 +47,16 @@ eg: (transaction add-user email firstname lastname password)"
     (clojure.java.io/copy input buffer)
     (.toByteArray buffer)))
 
+(defn fix-file-name [filename]
+  (.replaceAll filename "[^a-zA-Z0-9-\\.]" ""))
+
 (defn store-file [{:keys [tempfile filename content-type]}]
   (sql/with-connection 
     db
     (sql/update-or-insert-values
       :file
       ["name=?" filename]
-      {:type content-type :name filename :data (to-byte-array tempfile)})))
+      {:type content-type :name (fix-file-name filename) :data (to-byte-array tempfile)})))
 
 (defn list-files []
   (map :name (db-read "select name from file")))
