@@ -31,6 +31,39 @@ eg: (transaction add-user email firstname lastname password)"
     (sql/transaction
       (apply f args))))
 
+
+;file management
+
+(defn create-file-table []
+  (sql/create-table
+    :file
+    [:type "varchar(20)"]
+    [:name "varchar(50)"]
+    [:data "LONGVARBINARY"]))
+
+(defn to-byte-array [x]  
+  (with-open [input (new java.io.FileInputStream x)
+              buffer (new java.io.ByteArrayOutputStream)]
+    (clojure.java.io/copy input buffer)
+    (.toByteArray buffer)))
+
+(defn store-file [{:keys [tempfile filename content-type]}]
+  (sql/with-connection 
+    db
+    (sql/update-or-insert-values
+      :file
+      ["name=?" filename]
+      {:type content-type :name filename :data (to-byte-array tempfile)})))
+
+(defn list-files []
+  (map :name (db-read "select name from file")))
+
+(defn delete-file [name]
+  (sql/with-connection db (sql/delete-rows :file ["name=?" name])))
+
+(defn get-file [name]
+  (first (db-read "select * from file where name=?" name)))
+
 ;;blog table management
 (defn create-blog-table []
   (sql/create-table
@@ -92,6 +125,5 @@ eg: (transaction add-user email firstname lastname password)"
           (drop-table :blog)
           (create-admin-table)
           (create-blog-table)
+          (create-file-table)
           nil)))))
-
-

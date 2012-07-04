@@ -16,6 +16,7 @@
      (if (session/get :admin) 
        [:ul.menu-items          
         [:li (link-to "/logout" "logout")]
+        [:li (link-to "/upload" "upload")]
         [:li#new-post (link-to "/make-post" "New post")]]
        [:ul.menu-items
         [:li (link-to "/login" "login")]])
