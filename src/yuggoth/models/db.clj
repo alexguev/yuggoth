@@ -31,7 +31,6 @@ eg: (transaction add-user email firstname lastname password)"
     (sql/transaction
       (apply f args))))
 
-
 ;file management
 
 (defn create-file-table []
@@ -118,6 +117,11 @@ eg: (transaction add-user email firstname lastname password)"
 
 (defn set-admin [admin]
   (sql/with-connection db (sql/insert-record :admin admin)))
+
+(defn update-admin [admin]
+  (sql/with-connection 
+    db
+    (sql/update-values :admin ["handle=?" (:handle admin)] admin)))
 
 (defn get-admin []
   (try (first (db-read "select * from admin"))
