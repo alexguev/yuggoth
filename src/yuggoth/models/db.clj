@@ -125,14 +125,21 @@ eg: (transaction add-user email firstname lastname password)"
     db
     (sql/update-values :admin ["handle=?" (:handle admin)] admin)))
 
+(defn reset-blog []  
+  (sql/with-connection 
+    db
+    (drop-table :admin)
+    (drop-table :blog)
+    (drop-table :file)
+    (create-admin-table)
+    (create-blog-table)
+    (create-file-table)
+    nil))
+
 (defn get-admin []
   (try (first (db-read "select * from admin"))
     (catch java.sql.SQLException ex
       (when (.contains (.getMessage ex) "Table not found")
-        (sql/with-connection db
-          (drop-table :admin)
-          (drop-table :blog)
-          (create-admin-table)
-          (create-blog-table)
-          (create-file-table)
-          nil)))))
+        (reset-blog)))))
+
+
