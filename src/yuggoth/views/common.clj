@@ -50,7 +50,7 @@
                     "/css/jquery.alerts.css")
        (include-js "https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"
                    "/js/jquery.alerts.js"
-                   "/js/site.js")]
+                   "/js/site.js")]      
       [:body
        (hidden-field "selected" 
                      (condp = html-title
