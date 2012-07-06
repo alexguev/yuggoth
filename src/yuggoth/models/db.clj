@@ -111,6 +111,8 @@ eg: (transaction add-user email firstname lastname password)"
   (sql/create-table
     :admin   
     [:title "varchar(100)"]
+    [:style "varchar(50)"]
+    [:about "LONGVARCHAR"]
     [:handle "varchar(100)"]
     [:pass   "varchar(20)"]
     [:email  "varchar(50)"]))

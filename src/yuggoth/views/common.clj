@@ -20,8 +20,9 @@
         [:li (link-to "/upload" "upload")]
         [:li#new-post (link-to "/make-post" "New post")]]
        [:ul.menu-items
-        [:li (link-to "/login" "login")]])
-     [[:li#archives (link-to (str "/archives") "Archives")]
+        [:li (link-to "/login" "login")]])     
+     [[:li#about (link-to "/about" "About")]
+      [:li#archives (link-to "/archives" "Archives")]
       [:li#home (link-to "/" "Home")]])])
 
 (defn sidebar []
@@ -36,7 +37,8 @@
 
 (defn footer []
   [:div.footer
-   [:p "Copyright (C) 2011 Yogthos - Powered by: " (link-to "http://github.com/yogthos/yuggoth" "Yuggoth")]])
+   [:p (str "Copyright (C) 2011 " (:handle (db/get-admin)) " - Powered by: ") 
+    (link-to "http://github.com/yogthos/yuggoth" "Yuggoth")]])
 
 (defpartial layout [title & content]
   (let [html-title (if (string? title) title (:title title))
@@ -44,7 +46,7 @@
     (html5
       [:head
        [:title html-title]
-       (include-css "/css/screen.css"
+       (include-css (util/get-css)
                     "/css/jquery.alerts.css")
        (include-js "https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"
                    "/js/jquery.alerts.js"
