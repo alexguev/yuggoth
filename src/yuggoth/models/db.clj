@@ -110,18 +110,17 @@ eg: (transaction add-user email firstname lastname password)"
   (sql/create-table
     :comment
     [:blogid :int]
-    [:time :timestamp]
-    [:title "varchar(100)"]
+    [:time :timestamp]    
     [:content "LONGVARCHAR"]
     [:author "varchar(100)"]))
 
-(defn add-comment [blog-id title content author]
+(defn add-comment [blog-id content author]
   (sql/with-connection 
     db
     (sql/insert-values
       :comment
-      [:blogid :time :title :content :author]
-      [(new Timestamp (.getTime (new Date))) blog-id title content author])))
+      [:blogid :time :content :author]
+      [blog-id (new Timestamp (.getTime (new Date))) content author])))
 
 (defn get-comments [blog-id]
   (db-read "select * from comment where blogid=?" blog-id))
@@ -147,12 +146,14 @@ eg: (transaction add-user email firstname lastname password)"
 
 (defn reset-blog []  
   (sql/with-connection 
-    db
+    db    
     (drop-table :admin)
     (drop-table :blog)
+    (drop-table :comments)
     (drop-table :file)
     (create-admin-table)
     (create-blog-table)
+    (create-comments-table)
     (create-file-table)
     nil))
 
