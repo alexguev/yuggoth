@@ -106,6 +106,26 @@ eg: (transaction add-user email firstname lastname password)"
 (defn get-last-post [] 
   (first (db-read "select * from blog where id = (Select max(id) from blog)")))
 
+(defn create-comments-table []
+  (sql/create-table
+    :comment
+    [:blogid :int]
+    [:time :timestamp]
+    [:title "varchar(100)"]
+    [:content "LONGVARCHAR"]
+    [:author "varchar(100)"]))
+
+(defn add-comment [blog-id title content author]
+  (sql/with-connection 
+    db
+    (sql/insert-values
+      :comment
+      [:blogid :time :title :content :author]
+      [(new Timestamp (.getTime (new Date))) blog-id title content author])))
+
+(defn get-comments [blog-id]
+  (db-read "select * from comment where blogid=?" blog-id))
+
 ;;admin table management
 (defn create-admin-table []
   (sql/create-table
@@ -141,5 +161,3 @@ eg: (transaction add-user email firstname lastname password)"
     (catch java.sql.SQLException ex
       (when (.contains (.getMessage ex) "Table not found")
         (reset-blog)))))
-
-
