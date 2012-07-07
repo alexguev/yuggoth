@@ -37,7 +37,7 @@
 
 (defn footer []
   [:div.footer
-   [:p (str "Copyright (C) 2011 " (:handle (db/get-admin)) " - Powered by: ") 
+   [:p (str "Copyright (C) 2012 " (:handle (db/get-admin)) " - Powered by: ") 
     (link-to "http://github.com/yogthos/yuggoth" "Yuggoth")]])
 
 (defpartial layout [title & content]
