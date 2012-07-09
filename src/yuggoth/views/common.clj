@@ -42,7 +42,7 @@
 
 (defpartial layout [title & content]
   (let [html-title (if (string? title) title (:title title))
-        title-elements (when (map? title) (:elements title))]    
+        title-elements (when (map? title) (:elements title))]        
     (html5
       [:head
        [:title html-title]
