@@ -162,3 +162,9 @@ eg: (transaction add-user email firstname lastname password)"
     (catch java.sql.SQLException ex
       (when (.contains (.getMessage ex) "Table not found")
         (reset-blog)))))
+
+(defn export []
+  {:admin (dissoc (get-admin) :pass)
+   :posts
+   (vec (for [blog (db-read "select * from blog")]
+          (assoc blog :comments (vec (db-read "select * from comment where blogid = ?" (:id blog))))))})
