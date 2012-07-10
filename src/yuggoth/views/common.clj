@@ -19,8 +19,7 @@
         [:li (link-to "/profile" "profile")]
         [:li (link-to "/upload" "upload")]
         [:li#new-post (link-to "/make-post" "New post")]]
-       [:ul.menu-items
-        [:li (link-to "/login" "login")]])     
+       [:ul.menu-items])     
      [[:li#about (link-to "/about" "About")]
       [:li#archives (link-to "/archives" "Archives")]
       [:li#home (link-to "/" "Home")]])])
@@ -37,7 +36,10 @@
 
 (defn footer []
   [:div.footer
-   [:p (str "Copyright (C) 2012 " (:handle (db/get-admin)) " - Powered by: ") 
+   [:p "Copyright (C) 2012 " 
+    (:handle (db/get-admin)) 
+    (when (not (session/get :admin)) [:span " (" (link-to "/login" "login") ")"]) 
+    " - Powered by: "
     (link-to "http://github.com/yogthos/yuggoth" "Yuggoth")]])
 
 (defpartial layout [title & content]
