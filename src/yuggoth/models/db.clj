@@ -79,10 +79,10 @@ eg: (transaction add-user email firstname lastname password)"
 (defn update-post [id title content]
   (sql/with-connection
     db
-    (sql/update-or-insert-values
+    (sql/update-values
       :blog
       ["id=?" id]
-      {:id id :title title :content content :time (new Timestamp (.getTime (new Date)))})))
+      {:id id :title title :content content})))
 
 (defn get-posts [& [limit]]
   (db-read (str "select " (when limit "limit 0 10  ") " id, time, title from blog")))
