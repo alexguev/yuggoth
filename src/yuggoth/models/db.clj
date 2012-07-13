@@ -84,8 +84,8 @@ eg: (transaction add-user email firstname lastname password)"
       ["id=?" id]
       {:id id :title title :content content})))
 
-(defn get-posts [& [limit]]
-  (db-read (str "select " (when limit "limit 0 10  ") " id, time, title from blog")))
+(defn get-posts [& [limit]]  
+  (db-read (str "select " (if limit (str "limit 0 " limit)) " id, time, title from blog")))
 
 (defn get-post [id]  
   (first (db-read "select * from blog where id=?" id)))
