@@ -102,7 +102,8 @@ eg: (transaction add-user email firstname lastname password)"
 (defn delete-post [id]
   (sql/with-connection 
     db
-    (sql/delete-rows :blog ["id=?" id])))
+    (sql/delete-rows :blog ["id=?" id])
+    (sql/delete-rows :comment ["blogid=?"] id)))
 
 (defn get-last-post [] 
   (first (db-read "select * from blog where id = (Select max(id) from blog)")))
@@ -169,3 +170,22 @@ eg: (transaction add-user email firstname lastname password)"
    :posts
    (vec (for [blog (db-read "select * from blog")]
           (assoc blog :comments (vec (db-read "select * from comment where blogid = ?" (:id blog))))))})
+
+(defn import-posts [blog]
+  (try 
+    (let [content (read (new java.io.PushbackReader (new java.io.StringReader blog)))
+          author (:handle (get-admin))]      
+      (sql/with-connection
+        db
+        (doseq [{:keys [time title content]} (:posts content)]
+          (println "importing post" title)          
+          (sql/insert-values
+            :blog
+            [:time :title :content :author]
+            [(new java.sql.Timestamp (.getTime time)) title content author]))))
+    "import successful"
+    (catch Exception ex 
+      (do
+        (println (.getMessage ex))
+        (.printStackTrace ex)
+        (.getMessage ex)))))
